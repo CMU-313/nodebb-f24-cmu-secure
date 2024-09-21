@@ -12,6 +12,7 @@
     "scripts": {
         "start": "node loader.js",
         "lint": "eslint --cache ./nodebb .",
+        "pretest": "sudo kill -9 $(sudo lsof -t -i :4567) || true",
         "test": "nyc --reporter=html --reporter=text-summary mocha",
         "coverage": "nyc report --reporter=text-lcov > ./coverage/lcov.info",
         "coveralls": "nyc report --reporter=text-lcov | coveralls && rm -r coverage"

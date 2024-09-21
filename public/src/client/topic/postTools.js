@@ -181,18 +181,18 @@ define('forum/topic/postTools', [
 			}
 		});
 
-		//Adding the pin function:
+		// Adding the pin function:
 		postContainer.on('click', '[component="post/pin"]', function () {
-            const pid = getData($(this), 'data-pid');
+			const pid = getData($(this), 'data-pid');
 
 			// checks whether the post is already pinned
-            const isPinned = $(this).hasClass('pinned');
+			const isPinned = $(this).hasClass('pinned');
 
-			// get pin duration into an int 
-            const postPinDuration = parseInt(ajaxify.data.postPinDuration, 10);
+			// get pin duration into an int
+			const postPinDuration = parseInt(ajaxify.data.postPinDuration, 10);
 
-            togglePostPin(pid, isPinned, postPinDuration);
-        });
+			togglePostPin(pid, isPinned, postPinDuration);
+		});
 
 		if (config.enablePostHistory && ajaxify.data.privileges['posts:history']) {
 			postContainer.on('click', '[component="post/view-history"], [component="post/edit-indicator"]', function () {
@@ -418,24 +418,24 @@ define('forum/topic/postTools', [
 	}
 
 	function togglePostPin(pid, isPinned, postPinDuration) {
-        if (isPinned) {
+		if (isPinned) {
 			// if a post is already pinned, unpin it
-            postAction('unpin', pid);
-        } else {
-            require(['composer'], function (composer) {
-                composer.newTopic({
-                    cid: ajaxify.data.cid,
-                    title: ajaxify.data.title,
-                    body: '',
-                    tags: [],
-                    isPinning: true,
-                    pinDuration: postPinDuration,
-                    pinPid: pid,
-                });
-            });
-            postAction('pin', pid);
-        }
-    }
+			postAction('unpin', pid);
+		} else {
+			require(['composer'], function (composer) {
+				composer.newTopic({
+					cid: ajaxify.data.cid,
+					title: ajaxify.data.title,
+					body: '',
+					tags: [],
+					isPinning: true,
+					pinDuration: postPinDuration,
+					pinPid: pid,
+				});
+			});
+			postAction('pin', pid);
+		}
+	}
 
 
 	function purgePost(button) {
