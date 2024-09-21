@@ -152,6 +152,7 @@
     "merge-topic-list-title": "List of topics to be merged",
     "merge-options": "Merge options",
     "merge-select-main-topic": "Select the main topic",
+    "pin-comment": "Pin Comment",
     "merge-new-title-for-topic": "New title for topic",
     "topic-id": "Topic ID",
     "move-posts-instruction": "Click the posts you want to move then enter a topic ID or go to the target topic",
