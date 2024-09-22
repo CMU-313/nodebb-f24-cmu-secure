@@ -21,6 +21,12 @@
 		<div component="chat/message/body" class="message-body ps-0 py-0 overflow-auto text-break">
 			{messages.content}
 		</div>
+		
+		<div class="message-reaction" style="display: none;">
+    		<!-- Reaction emoji will appear here -->
+		</div>
+
+
 		<!-- IMPORT partials/chats/reactions.tpl -->
 		<div component="chat/message/controls" class="position-relative">
 			<div class="btn-group border shadow-sm controls position-absolute bg-body end-0" style="bottom:1rem;">
@@ -71,8 +77,8 @@
 					</ul>
 				</div>
 
-				<button data-action="emoji" class="btn-ghost-sm px-2 d-none d-md-flex" type="button" data-bs-toggle=tooltip" aria-label="Emoji" data-bs-original-title="Emoji"><i class="fa fa-smile"></i></button>
-				
+				<button data-action="message-emoji" class="btn-ghost-sm px-2 d-none d-md-flex" type="button" data-bs-toggle=tooltip" aria-label="Emoji" data-bs-original-title="Emoji"><i class="fa fa-smile"></i></button>
+
 			</div>
 		</div>
 	</div>
