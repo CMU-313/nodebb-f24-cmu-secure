@@ -12,7 +12,7 @@ const intFields = [
 	'tid', 'cid', 'uid', 'mainPid', 'postcount',
 	'viewcount', 'postercount', 'deleted', 'locked', 'pinned',
 	'pinExpiry', 'timestamp', 'upvotes', 'downvotes', 'lastposttime',
-	'deleterUid',
+	'deleterUid', 'endorsed',
 ];
 
 module.exports = function (Topics) {
@@ -63,6 +63,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.setTopicField = async function (tid, field, value) {
+		console.log('About to pass data to db.\n');
 		await db.setObjectField(`topic:${tid}`, field, value);
 	};
 
