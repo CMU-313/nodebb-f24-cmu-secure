@@ -51,6 +51,16 @@ define('forum/topic/threadTools', [
 			return false;
 		});
 
+		topicContainer.on('click', '[component="topic/endorse"]', function () {
+			topicCommand('put', '/endorse', 'endorse');
+			return false;
+		});
+
+		topicContainer.on('click', '[component="topic/unendorse"]', function () {
+			topicCommand('del', '/unendorse', 'unendorse');
+			return false;
+		});
+
 		topicContainer.on('click', '[component="topic/pin"]', function () {
 			topicCommand('put', '/pin', 'pin');
 			return false;
@@ -319,6 +329,11 @@ define('forum/topic/threadTools', [
 
 		posts.addTopicEvents(data.events);
 	};
+
+	ThreadTools.setEndorsedState = function (data) {
+		console.log('hhhhhh\n');
+	}
+
 
 	ThreadTools.setDeleteState = function (data) {
 		const threadEl = components.get('topic');

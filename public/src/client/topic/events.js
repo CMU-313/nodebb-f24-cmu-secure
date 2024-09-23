@@ -26,6 +26,9 @@ define('forum/topic/events', [
 		'event:topic_locked': threadTools.setLockedState,
 		'event:topic_unlocked': threadTools.setLockedState,
 
+		'event:topic_endorsed': threadTools.setEndorsedState,
+		'event:topic_unendorsed': threadTools.setEndorsedState,
+
 		'event:topic_pinned': threadTools.setPinnedState,
 		'event:topic_unpinned': threadTools.setPinnedState,
 
