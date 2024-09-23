@@ -297,13 +297,6 @@ Topics.isLocked = async function (tid) {
 	return locked === 1;
 };
 
-// Comment @YG
-// Adding endorsement check to Topics module
-Topics.isEndorsed = async function (tid) {
-	const endorsed = await Topics.getTopicField(tid, 'endorsed');
-	return endorsed === 1;
-};
-
 Topics.search = async function (tid, term) {
 	if (!tid || !term) {
 		throw new Error('[[error:invalid-data]]');

@@ -161,20 +161,6 @@ topicsAPI.unlock = async function (caller, data) {
 	});
 };
 
-// Comment @YG
-// Added topicsAPI to enable endorsement action.
-topicsAPI.endorse = async function (caller, data) {
-	await doTopicAction('endorse', 'event:topic_endorsed', caller, {
-		tids: data.tids,
-	});
-};
-
-topicsAPI.unendorse = async function (caller, data) {
-	await doTopicAction('unendorse', 'event:topic_unendorsed', caller, {
-		tids: data.tids,
-	});
-};
-
 topicsAPI.follow = async function (caller, data) {
 	await topics.follow(data.tid, caller.uid);
 };

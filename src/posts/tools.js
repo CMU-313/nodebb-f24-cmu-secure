@@ -6,11 +6,6 @@ module.exports = function (Posts) {
 	Posts.tools = {};
 
 	Posts.tools.delete = async function (uid, pid) {
-		// Comment @YG
-		//     I actually don't know the difference between this function and
-		// the one in "delete.js" as both of them seemed to be called when a
-		// post get deleted. However, this function is called first.
-		// 	   Tested by using console.log().
 		return await togglePostDelete(uid, pid, true);
 	};
 
@@ -19,9 +14,6 @@ module.exports = function (Posts) {
 	};
 
 	async function togglePostDelete(uid, pid, isDelete) {
-		// Comment @YG
-		//     This function will be called whenever you confirm your deletion
-		// through the "delete" button for each post.
 		const [postData, canDelete] = await Promise.all([
 			Posts.getPostData(pid),
 			privileges.posts.canDelete(pid, uid),

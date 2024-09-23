@@ -52,16 +52,6 @@ Events._types = {
 		icon: 'fa-trash-o',
 		translation: async (event, language) => translateSimple(event, language, 'topic:user-restored-topic'),
 	},
-	// Comment @YG
-	// Configured endorse as an event so clicking the button will trigger the toggle handler, defined in ./tools.
-	endorse: {
-		icon: 'fa-check',
-		translation: async (event, language) => translateSimple(event, language, 'topic:user-endorsed-topic'),
-	},
-	unendorse: {
-		icon: 'fa-check',
-		translation: async (event, language) => translateSimple(event, language, 'topic:user-unendorsed-topic'),
-	},
 	move: {
 		icon: 'fa-arrow-circle-right',
 		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-moved-topic-from', renderUser(event), `${event.fromCategory.name}`, renderTimeago(event)),

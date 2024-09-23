@@ -103,9 +103,6 @@ module.exports = function (Topics) {
 		}
 	}
 
-	// Comment @YG
-	// Need to be changed to accommodate "endorse" feature.
-	// Not yet implemented.
 	Topics.addPostData = async function (postData, uid) {
 		if (!Array.isArray(postData) || !postData.length) {
 			return [];
@@ -163,7 +160,6 @@ module.exports = function (Topics) {
 		topicData.posts.forEach((post) => {
 			if (post) {
 				post.topicOwnerPost = parseInt(topicData.uid, 10) === parseInt(post.uid, 10);
-				// post.display_endorse_tools = topicPrivileges.isAdminOrMod;
 				post.display_edit_tools = topicPrivileges.isAdminOrMod || (post.selfPost && topicPrivileges['posts:edit']);
 				post.display_delete_tools = topicPrivileges.isAdminOrMod || (post.selfPost && topicPrivileges['posts:delete']);
 				post.display_moderator_tools = post.display_edit_tools || post.display_delete_tools;
@@ -243,8 +239,6 @@ module.exports = function (Topics) {
 		} while (isDeleted);
 	};
 
-	// Comment @YG
-	// Need to be changed to accommodate "endorse" feature.
 	Topics.addPostToTopic = async function (tid, postData) {
 		const mainPid = await Topics.getTopicField(tid, 'mainPid');
 		if (!parseInt(mainPid, 10)) {
