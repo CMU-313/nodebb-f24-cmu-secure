@@ -51,6 +51,8 @@ define('forum/topic/threadTools', [
 			return false;
 		});
 
+		// Comment @YG
+		// Handles the front-end logic that establishes connection with APIs through topicCommand()
 		topicContainer.on('click', '[component="topic/endorse"]', function () {
 			topicCommand('put', '/endorse', 'endorse');
 			return false;
@@ -330,9 +332,24 @@ define('forum/topic/threadTools', [
 		posts.addTopicEvents(data.events);
 	};
 
+	// Comment @YG
+	// Event handler that responds to API calls triggered by clicking on the topicContainer.
+	// I am thinking the logic here might be incomplete, and is the ultimate cause that
+	//    leads to incorrect rendering of the 'Endorse Topic' button.
+	// TODO: Understand what does ThreadTools.setLockedState and use that as a template to implement this function.
 	ThreadTools.setEndorsedState = function (data) {
-		console.log('hhhhhh\n');
-	}
+		const threadEl = components.get('topic');
+		if (parseInt(data.tid, 10) !== parseInt(threadEl.attr('data-tid'), 10)) {
+			return;
+		}
+
+		components.get('topic/endorse').toggleClass('hidden', data.isEndorsed).parent().attr('hidden', data.isEndorsed ? '' : null);
+		components.get('topic/unendorse').toggleClass('hidden', !data.isEndorsed).parent().attr('hidden', !data.isEndorsed ? '' : null);
+		// $('[component="topic/endorsed"]').toggleClass('hidden', !data.isEndorsed);
+
+		ajaxify.data.endorsed = data.isEndorsed;
+		posts.addTopicEvents(data.events);
+	};
 
 
 	ThreadTools.setDeleteState = function (data) {
