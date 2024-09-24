@@ -347,6 +347,7 @@ define('forum/topic/threadTools', [
 		components.get('topic/unendorse').toggleClass('hidden', !data.isEndorsed).parent().attr('hidden', !data.isEndorsed ? '' : null);
 		// $('[component="topic/endorsed"]').toggleClass('hidden', !data.isEndorsed);
 
+
 		ajaxify.data.endorsed = data.isEndorsed;
 		posts.addTopicEvents(data.events);
 	};
