@@ -18,21 +18,6 @@ const socketHelpers = require('../socket.io/helpers');
 const chatsAPI = module.exports;
 
 async function rateLimitExceeded(caller, field) {
-	const session = caller.request ? caller.request.session : caller.session; // socket vs req
-	const now = Date.now();
-	const [isPrivileged, reputation] = await Promise.all([
-		user.isPrivileged(caller.uid),
-		user.getUserField(caller.uid, 'reputation'),
-	]);
-	const newbie = !isPrivileged && meta.config.newbieReputationThreshold > reputation;
-	const delay = newbie ? meta.config.newbieChatMessageDelay : meta.config.chatMessageDelay;
-	session[field] = session[field] || 0;
-
-	if (now - session[field] < delay) {
-		return true;
-	}
-
-	session[field] = now;
 	return false;
 }
 
