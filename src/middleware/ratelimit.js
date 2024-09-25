@@ -1,8 +1,6 @@
 'use strict';
 
-const winston = require('winston');
 const ratelimit = module.exports;
-const allowedCalls = 1000000;
 const timeframe = 600000;
 
 ratelimit.isFlooding = function (socket) {
