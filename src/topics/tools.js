@@ -117,14 +117,13 @@ module.exports = function (Topics) {
 	// The function is currently working, if you uncomment the console.log() function at the end.
 	topicTools.endorse = async function (tid, uid) {
 		return await toggleEndorse(tid, uid, true);
-	}
+	};
 
 	topicTools.unendorse = async function (tid, uid) {
 		return await toggleEndorse(tid, uid, false);
-	}
+	};
 
 	async function toggleEndorse(tid, uid, endorse) {
-
 		// Get the topic data
 		const topicData = await Topics.getTopicFields(tid, ['tid', 'uid', 'cid']);
 		if (!topicData || !topicData.cid) {

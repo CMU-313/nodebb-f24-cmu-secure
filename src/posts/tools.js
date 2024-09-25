@@ -10,7 +10,6 @@ module.exports = function (Posts) {
 		//     I actually don't know the difference between this function and
 		// the one in "delete.js" as both of them seemed to be called when a
 		// post get deleted. However, this function is called first.
-		// 	   Tested by using console.log().
 		return await togglePostDelete(uid, pid, true);
 	};
 
