@@ -11,8 +11,8 @@ ratelimit.isFlooding = function (socket) {
 	const now = Date.now();
 	socket.elapsedTime += now - socket.lastCallTime;
 	if (socket.elapsedTime >= timeframe) {
-	 socket.elapsedTime = 0;
-	 socket.callsPerSecond = 0;
+		socket.elapsedTime = 0;
+		socket.callsPerSecond = 0;
 	}
 	socket.lastCallTime = now;
 	return false;
