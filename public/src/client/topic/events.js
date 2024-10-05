@@ -26,6 +26,8 @@ define('forum/topic/events', [
 		'event:topic_locked': threadTools.setLockedState,
 		'event:topic_unlocked': threadTools.setLockedState,
 
+		// Comment @YG
+		// Define endorsed event.
 		'event:topic_endorsed': threadTools.setEndorsedState,
 		'event:topic_unendorsed': threadTools.setEndorsedState,
 

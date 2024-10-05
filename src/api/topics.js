@@ -150,6 +150,7 @@ topicsAPI.unpin = async function (caller, data) {
 };
 
 topicsAPI.lock = async function (caller, data) {
+	console.log('Calling topicsAPI\n');
 	await doTopicAction('lock', 'event:topic_locked', caller, {
 		tids: data.tids,
 	});

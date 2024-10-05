@@ -94,6 +94,8 @@ module.exports = function (Topics) {
 
 	async function toggleLock(tid, uid, lock) {
 		console.log('Toggling lock.\n');
+		// Comment @YG
+		// Fetching data from database.
 		const topicData = await Topics.getTopicFields(tid, ['tid', 'uid', 'cid']);
 		if (!topicData || !topicData.cid) {
 			throw new Error('[[error:no-topic]]');

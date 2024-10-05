@@ -48,15 +48,15 @@ define('forum/category/tools', [
 
 		// Comment @YG
 		// Added triggering logics.
-		components.get('topic/endorse').on('click', function () {
-			categoryCommand('put', '/endorse', 'endorse', onCommandComplete);
-			return false;
-		});
-
-		components.get('topic/unendorse').on('click', function () {
-			categoryCommand('del', '/unendorse', 'unendorse', onCommandComplete);
-			return false;
-		});
+		// components.get('topic/endorse').on('click', function () {
+		// 	categoryCommand('put', '/endorse', 'endorse', onCommandComplete);
+		// 	return false;
+		// });
+		//
+		// components.get('topic/unendorse').on('click', function () {
+		// 	categoryCommand('del', '/unendorse', 'unendorse', onCommandComplete);
+		// 	return false;
+		// });
 
 		components.get('topic/pin').on('click', function () {
 			categoryCommand('put', '/pin', 'pin', onCommandComplete);
@@ -148,8 +148,8 @@ define('forum/category/tools', [
 		socket.on('event:topic_unlocked', setLockedState);
 		// Comment @YG
 		// Listening for the event to be triggered, and setting state of endorsement accordingly.
-		socket.on('event:topic_endorsed', setEndorsedState);
-		socket.on('event:topic_unendorsed', setEndorsedState);
+		// socket.on('event:topic_endorsed', setEndorsedState);
+		// socket.on('event:topic_unendorsed', setEndorsedState);
 		socket.on('event:topic_pinned', setPinnedState);
 		socket.on('event:topic_unpinned', setPinnedState);
 		socket.on('event:topic_moved', onTopicMoved);
@@ -196,8 +196,8 @@ define('forum/category/tools', [
 		socket.removeListener('event:topic_purged', onTopicPurged);
 		socket.removeListener('event:topic_locked', setLockedState);
 		socket.removeListener('event:topic_unlocked', setLockedState);
-		socket.removeListener('event:topic_endorsed', setEndorsedState);
-		socket.removeListener('event:topic_unendorsed', setEndorsedState);
+		// socket.removeListener('event:topic_endorsed', setEndorsedState);
+		// socket.removeListener('event:topic_unendorsed', setEndorsedState);
 		socket.removeListener('event:topic_pinned', setPinnedState);
 		socket.removeListener('event:topic_unpinned', setPinnedState);
 		socket.removeListener('event:topic_moved', onTopicMoved);
@@ -229,7 +229,7 @@ define('forum/category/tools', [
 		const areAllDeleted = areAll(isTopicDeleted, tids);
 		const isAnyPinned = isAny(isTopicPinned, tids);
 		const isAnyLocked = isAny(isTopicLocked, tids);
-		const isAnyEndorsed = isAny(isTopicEndorsed, tids);
+		// const isAnyEndorsed = isAny(isTopicEndorsed, tids);
 		const isAnyScheduled = isAny(isTopicScheduled, tids);
 		const areAllScheduled = areAll(isTopicScheduled, tids);
 
@@ -240,8 +240,8 @@ define('forum/category/tools', [
 		components.get('topic/lock').toggleClass('hidden', isAnyLocked);
 		components.get('topic/unlock').toggleClass('hidden', !isAnyLocked);
 
-		components.get('topic/endorse').toggleClass('hidden', isAnyEndorsed);
-		components.get('topic/unendorse').toggleClass('hidden', !isAnyEndorsed);
+		// components.get('topic/endorse').toggleClass('hidden', isAnyEndorsed);
+		// components.get('topic/unendorse').toggleClass('hidden', !isAnyEndorsed);
 
 		components.get('topic/pin').toggleClass('hidden', areAllScheduled || isAnyPinned);
 		components.get('topic/unpin').toggleClass('hidden', areAllScheduled || !isAnyPinned);
@@ -310,11 +310,11 @@ define('forum/category/tools', [
 		topic.find('[component="topic/locked"]').toggleClass('hidden', !data.isLocked);
 	}
 
-	function setEndorsedState(data) {
-		const topic = getTopicEl(data.tid);
-		topic.toggleClass('endorsed', data.isEndorsed);
-		topic.find('[component="topic/endorsed"]').toggleClass('hidden', !data.isEndorsed);
-	}
+	// function setEndorsedState(data) {
+	// 	const topic = getTopicEl(data.tid);
+	// 	topic.toggleClass('endorsed', data.isEndorsed);
+	// 	topic.find('[component="topic/endorsed"]').toggleClass('hidden', !data.isEndorsed);
+	// }
 
 	function onTopicMoved(data) {
 		getTopicEl(data.tid).remove();

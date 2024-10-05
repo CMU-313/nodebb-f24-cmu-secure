@@ -325,7 +325,10 @@ define('forum/topic/threadTools', [
 
 		threadEl.find('[component="post"][data-uid="' + app.user.uid + '"].deleted [component="post/tools"]').toggleClass('hidden', isLocked);
 
+		// The $ is an alias for the jQuery() function to manipulate HTML element and data.
+		// This operation looks for element with the component and add hidden if data.isLocked.
 		$('[component="topic/labels"] [component="topic/locked"]').toggleClass('hidden', !data.isLocked);
+		// Finds dropdown-menu elem inside post/tools elem and set its HTML to be empty.
 		$('[component="post/tools"] .dropdown-menu').html('');
 		ajaxify.data.locked = data.isLocked;
 
@@ -345,8 +348,8 @@ define('forum/topic/threadTools', [
 
 		components.get('topic/endorse').toggleClass('hidden', data.isEndorsed).parent().attr('hidden', data.isEndorsed ? '' : null);
 		components.get('topic/unendorse').toggleClass('hidden', !data.isEndorsed).parent().attr('hidden', !data.isEndorsed ? '' : null);
-		// $('[component="topic/endorsed"]').toggleClass('hidden', !data.isEndorsed);
 
+		$('[component="topic/endorsed"]').toggleClass('hidden', !data.isEndorsed);
 
 		ajaxify.data.endorsed = data.isEndorsed;
 		posts.addTopicEvents(data.events);
