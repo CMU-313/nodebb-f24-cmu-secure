@@ -150,7 +150,6 @@ topicsAPI.unpin = async function (caller, data) {
 };
 
 topicsAPI.lock = async function (caller, data) {
-	console.log('Calling topicsAPI\n');
 	await doTopicAction('lock', 'event:topic_locked', caller, {
 		tids: data.tids,
 	});
@@ -163,7 +162,7 @@ topicsAPI.unlock = async function (caller, data) {
 };
 
 // Comment @YG
-// Added topicsAPI to enable endorsement action.
+// Handles front-end responses passed in by methods in threadTools.js and triggers backend func calls.
 topicsAPI.endorse = async function (caller, data) {
 	await doTopicAction('endorse', 'event:topic_endorsed', caller, {
 		tids: data.tids,

@@ -219,6 +219,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		topicData.forkTimestampISO = utils.toISOString(topicData.forkTimestamp);
 	}
 	topicData.related = related || [];
+	// This means each topic inherently creates a post.
 	topicData.unreplied = topicData.postcount === 1;
 	topicData.icons = [];
 

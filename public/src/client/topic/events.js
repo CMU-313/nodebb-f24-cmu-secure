@@ -28,6 +28,7 @@ define('forum/topic/events', [
 
 		// Comment @YG
 		// Define endorsed event.
+		// TODO: why do we need to define events?
 		'event:topic_endorsed': threadTools.setEndorsedState,
 		'event:topic_unendorsed': threadTools.setEndorsedState,
 

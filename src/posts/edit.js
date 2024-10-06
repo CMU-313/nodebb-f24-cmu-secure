@@ -20,7 +20,6 @@ module.exports = function (Posts) {
 	});
 
 	Posts.edit = async function (data) {
-		console.log('Editing the post...');
 		const canEdit = await privileges.posts.canEdit(data.pid, data.uid);
 		if (!canEdit.flag) {
 			throw new Error(canEdit.message);

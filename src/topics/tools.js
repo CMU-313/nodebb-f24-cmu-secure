@@ -93,7 +93,6 @@ module.exports = function (Topics) {
 	};
 
 	async function toggleLock(tid, uid, lock) {
-		console.log('Toggling lock.\n');
 		// Comment @YG
 		// Fetching data from database.
 		const topicData = await Topics.getTopicFields(tid, ['tid', 'uid', 'cid']);
@@ -116,7 +115,6 @@ module.exports = function (Topics) {
 
 	// Comment @YG
 	// Added endorsement back-end logic. Similar to other topicTools functions.
-	// The function is currently working, if you uncomment the console.log() function at the end.
 	topicTools.endorse = async function (tid, uid) {
 		return await toggleEndorse(tid, uid, true);
 	};
@@ -132,6 +130,11 @@ module.exports = function (Topics) {
 			throw new Error('[[error:no-topic]]');
 		}
 
+		// Cannot endorse one's own topic
+		if (uid === topicData.uid) {
+			throw new Error('[[error:self-endorse]]');
+		}
+
 		// Only admins can do endorsement
 		const isAdminOrMod = await privileges.categories.isAdminOrMod(topicData.cid, uid);
 		if (!isAdminOrMod) {
@@ -139,15 +142,12 @@ module.exports = function (Topics) {
 		}
 
 		// Set the endorse field according to arg endorse
-		// console.log('Setting endorsement field.\n');
 		await Topics.setTopicField(tid, 'endorsed', endorse ? 1 : 0);
 		topicData.events = await Topics.events.log(tid, { type: endorse ? 'endorse' : 'unendorse', uid });
 		topicData.isEndorsed = endorse;
 		topicData.endorsed = endorse;
 
 		plugins.hooks.fire('action:topic.endorse', { topic: _.clone(topicData), uid: uid });
-
-		// console.log('Endorse action complete.\n');
 
 		return topicData;
 	}

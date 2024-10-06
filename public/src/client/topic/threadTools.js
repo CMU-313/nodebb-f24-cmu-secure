@@ -325,6 +325,7 @@ define('forum/topic/threadTools', [
 
 		threadEl.find('[component="post"][data-uid="' + app.user.uid + '"].deleted [component="post/tools"]').toggleClass('hidden', isLocked);
 
+		// Comment @YG
 		// The $ is an alias for the jQuery() function to manipulate HTML element and data.
 		// This operation looks for element with the component and add hidden if data.isLocked.
 		$('[component="topic/labels"] [component="topic/locked"]').toggleClass('hidden', !data.isLocked);
@@ -337,9 +338,6 @@ define('forum/topic/threadTools', [
 
 	// Comment @YG
 	// Event handler that responds to API calls triggered by clicking on the topicContainer.
-	// I am thinking the logic here might be incomplete, and is the ultimate cause that
-	//    leads to incorrect rendering of the 'Endorse Topic' button.
-	// TODO: Understand what does ThreadTools.setLockedState and use that as a template to implement this function.
 	ThreadTools.setEndorsedState = function (data) {
 		const threadEl = components.get('topic');
 		if (parseInt(data.tid, 10) !== parseInt(threadEl.attr('data-tid'), 10)) {
