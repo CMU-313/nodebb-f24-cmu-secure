@@ -46,18 +46,6 @@ define('forum/category/tools', [
 			return false;
 		});
 
-		// Comment @YG
-		// Added triggering logics.
-		// components.get('topic/endorse').on('click', function () {
-		// 	categoryCommand('put', '/endorse', 'endorse', onCommandComplete);
-		// 	return false;
-		// });
-		//
-		// components.get('topic/unendorse').on('click', function () {
-		// 	categoryCommand('del', '/unendorse', 'unendorse', onCommandComplete);
-		// 	return false;
-		// });
-
 		components.get('topic/pin').on('click', function () {
 			categoryCommand('put', '/pin', 'pin', onCommandComplete);
 			return false;
@@ -275,10 +263,6 @@ define('forum/category/tools', [
 		return getTopicEl(tid).hasClass('locked');
 	}
 
-	function isTopicEndorsed(tid) {
-		return getTopicEl(tid).hasClass('endorsed');
-	}
-
 	function isTopicPinned(tid) {
 		return getTopicEl(tid).hasClass('pinned');
 	}
@@ -309,12 +293,6 @@ define('forum/category/tools', [
 		topic.toggleClass('locked', data.isLocked);
 		topic.find('[component="topic/locked"]').toggleClass('hidden', !data.isLocked);
 	}
-
-	// function setEndorsedState(data) {
-	// 	const topic = getTopicEl(data.tid);
-	// 	topic.toggleClass('endorsed', data.isEndorsed);
-	// 	topic.find('[component="topic/endorsed"]').toggleClass('hidden', !data.isEndorsed);
-	// }
 
 	function onTopicMoved(data) {
 		getTopicEl(data.tid).remove();
