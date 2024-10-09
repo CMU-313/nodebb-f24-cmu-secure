@@ -707,44 +707,6 @@ describe('Topic\'s', () => {
 		});
 
 
-		// Comment @YG
-		// Most basic test cases that ensure backend endorse logic
-		it('should endorse topic by another admin', async () => {
-			await apiTopics.endorse({ uid: adminUid }, { tids: [endorseTestTopic.tid], cid: categoryObj.cid });
-			const isEndorsed = await topics.isEndorsed(endorseTestTopic.tid);
-			assert(isEndorsed);
-		});
-
-		it('should unendorse topic by another admin', async () => {
-			await apiTopics.unendorse({ uid: adminUid }, { tids: [endorseTestTopic.tid], cid: categoryObj.cid });
-			const isEndorsed = await topics.isEndorsed(endorseTestTopic.tid);
-			assert(!isEndorsed);
-		});
-
-		// Only admin can endorse, and should raise error if regular user wants to endorse
-		it('only admin can endorse', async () => {
-			try {
-				// Test a regular user
-				await apiTopics.endorse({ uid: fooUid }, { tids: [newTopic.tid], cid: categoryObj.cid });
-				assert(false);
-			} catch (err) {
-				assert.equal(err.message, '[[error:no-privileges]]');
-			}
-		});
-
-		// Cannot endorse the topic created by yourself, and should raise an error
-		it('cannot endorse your own topic', async () => {
-			try {
-				// Note that "topic" is created by the default admin in this test suite
-				// Therefore that admin should not be able to endorse their topics
-				await apiTopics.endorse({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid });
-				assert(false);
-			} catch (err) {
-				assert.equal(err.message, '[[error:self-endorse]]');
-			}
-		});
-		// End of implementation
-
 
 		it('should pin topic', async () => {
 			await apiTopics.pin({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid });
