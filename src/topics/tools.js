@@ -130,10 +130,6 @@ module.exports = function (Topics) {
 			throw new Error('[[error:no-topic]]');
 		}
 
-		// Cannot endorse one's own topic
-		if (uid === topicData.uid) {
-			throw new Error('[[error:self-endorse]]');
-		}
 
 		// Only admins can do endorsement
 		const isAdminOrMod = await privileges.categories.isAdminOrMod(topicData.cid, uid);
