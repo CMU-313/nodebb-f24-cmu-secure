@@ -59,7 +59,7 @@ define('forum/topic/threadTools', [
 		});
 
 		topicContainer.on('click', '[component="topic/unendorse"]', function () {
-			topicCommand('del', '/unendorse', 'unendorse');
+			topicCommand('del', '/endorse', 'unendorse');
 			return false;
 		});
 
@@ -347,6 +347,7 @@ define('forum/topic/threadTools', [
 		components.get('topic/endorse').toggleClass('hidden', data.isEndorsed).parent().attr('hidden', data.isEndorsed ? '' : null);
 		components.get('topic/unendorse').toggleClass('hidden', !data.isEndorsed).parent().attr('hidden', !data.isEndorsed ? '' : null);
 
+		$('[component="topic/labels"] [component="topic/locked"]').toggleClass('hidden', !data.isLocked);
 		$('[component="topic/endorsed"]').toggleClass('hidden', !data.isEndorsed);
 
 		ajaxify.data.endorsed = data.isEndorsed;
