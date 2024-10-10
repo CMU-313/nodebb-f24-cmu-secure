@@ -2716,6 +2716,144 @@ describe('Topic\'s', () => {
 	});
 });
 
+
+const { Server } = require('socket.io');
+const http = require('http');
+
+describe('Topic\'s Endorse Feature with Mock Server', () => {
+    let ioServer;
+    let httpServer;
+    let serverSocket;
+    let clientSocket;
+    let adminUser;
+    let regularUser;
+    let testTopic;
+
+    before((done) => {
+        // Create an HTTP server
+        httpServer = http.createServer();
+        ioServer = new Server(httpServer, {
+            // options
+        });
+
+        // Listen for client connections
+        ioServer.on('connection', (socket) => {
+            serverSocket = socket;
+            // Handle events
+            socket.on('endorse', (data) => {
+                // Emit event back to client
+                socket.emit('event:topic_endorsed', data);
+            });
+
+            socket.on('unendorse', (data) => {
+                // Emit event back to client
+                socket.emit('event:topic_unendorsed', data);
+            });
+        });
+
+        // Start the server
+        httpServer.listen(0, async () => { // Listen on a random available port
+            const port = httpServer.address().port;
+            const url = `http://localhost:${port}`;
+
+            // Initialize Socket.IO client
+            clientSocket = io(url, {
+                transports: ['websocket'],
+                forceNew: true,
+            });
+
+            // Listen for client connection
+            clientSocket.on('connect', async () => {
+                try {
+                    // Create users and topic
+                    adminUser = await User.create({
+                        username: 'adminUser',
+                        password: 'securePassword',
+                        roles: ['administrator'],
+                    });
+
+                    regularUser = await User.create({
+                        username: 'regularUser',
+                        password: 'securePassword',
+                        roles: ['user'],
+                    });
+
+                    testTopic = await topics.post({
+                        uid: adminUser.uid,
+                        title: 'Endorsement Test Topic',
+                        content: 'Content for endorsement testing.',
+                        cid: categoryObj.cid,
+                    });
+
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            });
+
+            // Handle connection errors
+            clientSocket.on('connect_error', (err) => {
+                done(err);
+            });
+        });
+    });
+
+    after((done) => {
+        // Disconnect client
+        if (clientSocket && clientSocket.connected) {
+            clientSocket.disconnect();
+        }
+
+        // Close server
+        if (ioServer) {
+            ioServer.close();
+        }
+        if (httpServer) {
+            httpServer.close();
+        }
+
+        // Clean up users and topic
+        Promise.all([
+            adminUser ? User.delete(adminUser.uid) : Promise.resolve(),
+            regularUser ? User.delete(regularUser.uid) : Promise.resolve(),
+            testTopic ? topics.delete(testTopic.tid) : Promise.resolve(),
+        ])
+            .then(() => done())
+            .catch(done);
+    });
+
+    it('should allow admin to endorse a topic successfully', (done) => {
+        clientSocket.on('event:topic_endorsed', (data) => {
+            try {
+                assert.strictEqual(data.tid, testTopic.tid, 'Endorsement event should have correct topic ID');
+                assert.strictEqual(data.uid, adminUser.uid, 'Endorsement event should have correct user ID');
+                done();
+            } catch (err) {
+                done(err);
+            }
+        });
+
+        // Emit endorse event from client
+        clientSocket.emit('endorse', { tid: testTopic.tid, uid: adminUser.uid });
+    });
+
+    it('should allow admin to unendorse a topic successfully', (done) => {
+        clientSocket.on('event:topic_unendorsed', (data) => {
+            try {
+                assert.strictEqual(data.tid, testTopic.tid, 'Unendorsement event should have correct topic ID');
+                assert.strictEqual(data.uid, adminUser.uid, 'Unendorsement event should have correct user ID');
+                done();
+            } catch (err) {
+                done(err);
+            }
+        });
+
+        // Emit unendorse event from client
+        clientSocket.emit('unendorse', { tid: testTopic.tid, uid: adminUser.uid });
+    });
+});
+
+
 describe('Topics\'', async () => {
 	let files;
 
