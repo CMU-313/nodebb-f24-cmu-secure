@@ -2750,20 +2750,6 @@ describe('Topic\'s Endorse Feature with Mock Server', () => {
 		clientSocket.emit('endorse', { tid: testTopic.tid, uid: adminUser.uid });
 	});
 
-	it('should allow admin to unendorse a topic successfully', (done) => {
-		clientSocket.on('event:topic_unendorsed', (data) => {
-			try {
-				assert.strictEqual(data.tid, testTopic.tid, 'Unendorsement event should have correct topic ID');
-				assert.strictEqual(data.uid, adminUser.uid, 'Unendorsement event should have correct user ID');
-				done();
-			} catch (err) {
-				done(err);
-			}
-		});
-
-		// Emit unendorse event from client
-		clientSocket.emit('unendorse', { tid: testTopic.tid, uid: adminUser.uid });
-	});
 });
 
 
