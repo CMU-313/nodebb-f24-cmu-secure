@@ -7,13 +7,8 @@ const mockdate = require('mockdate');
 const nconf = require('nconf');
 const util = require('util');
 
-const http = require('http');
-
-
 const sleep = util.promisify(setTimeout);
 
-const io = require('socket.io');
-const { Server } = require('socket.io');
 const db = require('./mocks/databasemock');
 const file = require('../src/file');
 const topics = require('../src/topics');
@@ -29,16 +24,6 @@ const socketTopics = require('../src/socket.io/topics');
 const apiTopics = require('../src/api/topics');
 const apiPosts = require('../src/api/posts');
 const request = require('../src/request');
-
-let categoryObj;
-
-before(async () => {
-	categoryObj = await categories.create({
-		name: 'Test Category',
-		description: 'Test category created by testing script',
-	});
-});
-
 
 describe('Topic\'s', () => {
 	let topic;
@@ -722,8 +707,7 @@ describe('Topic\'s', () => {
 		});
 
 
-		// Comment @YG
-		// Most basic test cases that ensure backend endorse logic
+		// Test Cases for Endorsement Logic 
 		it('should endorse topic by another admin', async () => {
 			await apiTopics.endorse({ uid: adminUid }, { tids: [endorseTestTopic.tid], cid: categoryObj.cid });
 			const isEndorsed = await topics.isEndorsed(endorseTestTopic.tid);
@@ -747,6 +731,8 @@ describe('Topic\'s', () => {
 			}
 		});
 		// End of implementation
+
+		
 
 		it('should pin topic', async () => {
 			await apiTopics.pin({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid });
@@ -960,83 +946,6 @@ describe('Topic\'s', () => {
 					});
 				});
 			});
-		});
-	});
-
-	// Implementing additional test case features for comprehensiveness:
-	describe('Topic\'s Endorse Feature', () => {
-		let adminUser;
-		let regularUser;
-		let testTopic;
-		let socket; // Define socket
-
-		before((done) => {
-			// Initialize Socket.IO client
-			socket = io(nconf.get('url'), {
-				transports: ['websocket'],
-				forceNew: true,
-			});
-
-			// Listen for connection
-			socket.on('connect', async () => {
-				try {
-					// Create or retrieve an admin user
-					adminUser = await User.create({
-						username: 'adminUser',
-						password: 'securePassword',
-						roles: ['administrator'],
-					});
-
-					// Create or retrieve a regular user
-					regularUser = await User.create({
-						username: 'regularUser',
-						password: 'securePassword',
-						roles: ['user'],
-					});
-
-					// Create a topic to endorse
-					testTopic = await topics.post({
-						uid: adminUser.uid,
-						title: 'Endorsement Test Topic',
-						content: 'Content for endorsement testing.',
-						cid: categoryObj.cid,
-					});
-
-					done(); // Proceed with the tests
-				} catch (err) {
-					done(err); // Fail the tests if there's an error
-				}
-			});
-
-			// Handle connection errors
-			socket.on('connect_error', (err) => {
-				done(err);
-			});
-		});
-
-		after(async () => {
-			try {
-				// Disconnect Socket.IO client
-				if (socket && socket.connected) {
-					socket.disconnect();
-				}
-
-				// Clean up: Delete test users and topic if they exist
-				if (adminUser && adminUser.uid) {
-					await User.delete(adminUser.uid);
-				}
-
-				if (regularUser && regularUser.uid) {
-					await User.delete(regularUser.uid);
-				}
-
-				if (testTopic && testTopic.tid) {
-					await topics.delete(testTopic.tid);
-				}
-			} catch (err) {
-				// Log the error but don't fail the cleanup
-				console.error('Error during cleanup:', err);
-			}
 		});
 	});
 
@@ -2066,11 +1975,10 @@ describe('Topic\'s', () => {
 		});
 	});
 
-
 	it('should check if user is moderator', (done) => {
 		socketTopics.isModerator({ uid: adminUid }, topic.tid, (err, isModerator) => {
 			assert.ifError(err);
-			assert.strictEqual(isModerator, false);
+			assert(!isModerator);
 			done();
 		});
 	});
@@ -2643,7 +2551,6 @@ describe('Topic\'s', () => {
 		});
 	});
 });
-
 
 describe('Topics\'', async () => {
 	let files;
