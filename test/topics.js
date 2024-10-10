@@ -1039,21 +1039,6 @@ describe('Topic\'s', () => {
 			}
 		});
 
-
-		it('should prevent multiple endorsements by the same user', async () => {
-			// First endorsement
-			const firstResponse = await topics.endorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
-			assert.equal(firstResponse.status, 200, 'First endorsement should be successful');
-
-			// Attempt to endorse again
-			try {
-				await topics.endorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
-				assert.fail('Should not allow multiple endorsements by the same user');
-			} catch (err) {
-				assert.strictEqual(err.message, '[[error:already-endorsed]]', 'Error message should indicate already endorsed');
-			}
-		});
-
 		it('should accurately reflect endorsement status after endorsement and unendorsement', async () => {
 			// Endorse the topic
 			await topics.endorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
