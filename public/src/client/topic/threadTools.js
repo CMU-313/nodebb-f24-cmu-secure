@@ -349,6 +349,7 @@ define('forum/topic/threadTools', [
 
 		$('[component="topic/labels"] [component="topic/locked"]').toggleClass('hidden', !data.isLocked);
 		$('[component="topic/endorsed"]').toggleClass('hidden', !data.isEndorsed);
+		$('[component="topic/endorsed-checkmark"]').toggleClass('hidden', !data.isEndorsed);
 
 		ajaxify.data.endorsed = data.isEndorsed;
 		posts.addTopicEvents(data.events);
