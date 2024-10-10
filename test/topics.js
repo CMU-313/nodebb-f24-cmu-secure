@@ -1057,7 +1057,7 @@ describe('Topic\'s', () => {
 
 		it('should return an error when endorsing a non-existent topic', async () => {
 			try {
-				await topics.endorse({ uid: adminUser.uid }, { tids: [999999], cid: categoryObj.cid }); // Replaced 'someCategoryId' with 'categoryObj.cid'
+				await topics.endorse({ uid: adminUser.uid }, { tids: [999999], cid: categoryObj.cid });
 				assert.fail('Should not endorse a non-existent topic');
 			} catch (err) {
 				assert.strictEqual(err.message, '[[error:no-topic]]', 'Error message should indicate no such topic');
