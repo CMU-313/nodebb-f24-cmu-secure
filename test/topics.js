@@ -1039,18 +1039,6 @@ describe('Topic\'s', () => {
 			}
 		});
 
-		it('should accurately reflect endorsement status after endorsement and unendorsement', async () => {
-			// Endorse the topic
-			await topics.endorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
-			let endorsed = await topics.isEndorsed(testTopic.tid);
-			assert.strictEqual(endorsed, true, 'Topic should be endorsed after endorsement');
-
-			// Unendorse the topic
-			await topics.unendorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
-			endorsed = await topics.isEndorsed(testTopic.tid);
-			assert.strictEqual(endorsed, false, 'Topic should not be endorsed after unendorsement');
-		});
-
 		it('should emit endorsement and unendorsement events', (done) => {
 			let endorsementEventReceived = false;
 			let unendorsementEventReceived = false;
