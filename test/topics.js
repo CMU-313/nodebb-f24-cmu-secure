@@ -707,6 +707,32 @@ describe('Topic\'s', () => {
 		});
 
 
+		// Comment @YG
+		// Most basic test cases that ensure backend endorse logic
+		it('should endorse topic by another admin', async () => {
+			await apiTopics.endorse({ uid: adminUid }, { tids: [endorseTestTopic.tid], cid: categoryObj.cid });
+			const isEndorsed = await topics.isEndorsed(endorseTestTopic.tid);
+			assert(isEndorsed);
+		});
+
+		it('should unendorse topic by another admin', async () => {
+			await apiTopics.unendorse({ uid: adminUid }, { tids: [endorseTestTopic.tid], cid: categoryObj.cid });
+			const isEndorsed = await topics.isEndorsed(endorseTestTopic.tid);
+			assert(!isEndorsed);
+		});
+
+		// Only admin can endorse, and should raise error if regular user wants to endorse
+		it('only admin can endorse', async () => {
+			try {
+				// Test a regular user
+				await apiTopics.endorse({ uid: fooUid }, { tids: [newTopic.tid], cid: categoryObj.cid });
+				assert(false);
+			} catch (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+			}
+		});
+		// End of implementation
+
 
 		it('should pin topic', async () => {
 			await apiTopics.pin({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid });
