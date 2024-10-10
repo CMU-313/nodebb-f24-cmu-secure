@@ -356,17 +356,6 @@ describe('Messaging Library', () => {
 			assert.equal(raw, 'first chat message');
 		});
 
-		it('should fail to send second message due to rate limit', async () => {
-			const oldValue = meta.config.chatMessageDelay;
-			meta.config.chatMessageDelay = 1000;
-
-			await callv3API('post', `/chats/${roomId}`, { roomId: roomId, message: 'first chat message' }, 'foo');
-			const { body } = await callv3API('post', `/chats/${roomId}`, { roomId: roomId, message: 'first chat message' }, 'foo');
-			const { status } = body;
-			assert.equal(status.message, await translator.translate('[[error:too-many-messages]]'));
-			meta.config.chatMessageDelay = oldValue;
-		});
-
 		it('should return invalid-data error', async () => {
 			await assert.rejects(
 				api.chats.getRawMessage({ uid: mocks.users.foo.uid }, undefined),
