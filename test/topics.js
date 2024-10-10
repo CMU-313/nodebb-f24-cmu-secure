@@ -957,154 +957,180 @@ describe('Topic\'s', () => {
 		let testTopic;
 		let socket; // Define socket
 
-		before(async () => {
-			// Initialize Socket.IO client
-			socket = io(nconf.get('url'), {
-				// You might need to pass additional options like auth if required
+		before((done) => {
+		  // Initialize Socket.IO client
+		  socket = io(nconf.get('url'), {
 				transports: ['websocket'],
 				forceNew: true,
-			});
+		  });
 
-			// Create or retrieve an admin user
-			adminUser = await User.create({
-				username: 'adminUser',
-				password: 'securePassword',
-				roles: ['administrator'],
-			});
+		  // Listen for connection
+		  socket.on('connect', async () => {
+				try {
+			  // Create or retrieve an admin user
+			  adminUser = await User.create({
+						username: 'adminUser',
+						password: 'securePassword',
+						roles: ['administrator'],
+			  });
 
-			// Create or retrieve a regular user
-			regularUser = await User.create({
-				username: 'regularUser',
-				password: 'securePassword',
-				roles: ['user'],
-			});
+			  // Create or retrieve a regular user
+			  regularUser = await User.create({
+						username: 'regularUser',
+						password: 'securePassword',
+						roles: ['user'],
+			  });
 
-			// Create a topic to endorse
-			testTopic = await topics.post({ // Replaced 'topics.create' with 'topics.post'
-				uid: adminUser.uid,
-				title: 'Endorsement Test Topic',
-				content: 'Content for endorsement testing.',
-				cid: categoryObj.cid, // Replaced 'someCategoryId' with 'categoryObj.cid'
-			});
+			  // Create a topic to endorse
+			  testTopic = await topics.post({
+						uid: adminUser.uid,
+						title: 'Endorsement Test Topic',
+						content: 'Content for endorsement testing.',
+						cid: categoryObj.cid,
+			  });
+
+			  done(); // Proceed with the tests
+				} catch (err) {
+			  done(err); // Fail the tests if there's an error
+				}
+		  });
+
+		  // Handle connection errors
+		  socket.on('connect_error', (err) => {
+				done(err);
+		  });
 		});
 
 		after(async () => {
+		  try {
 			// Disconnect Socket.IO client
-			if (socket && socket.connected) {
-				socket.disconnect();
-			}
+				if (socket && socket.connected) {
+			  socket.disconnect();
+				}
 
-			// Clean up: Delete test users and topic
-			await User.delete(adminUser.uid); // Replaced 'users.delete' with 'User.delete'
-			await User.delete(regularUser.uid); // Replaced 'users.delete' with 'User.delete'
-			await topics.delete(testTopic.tid);
+				// Clean up: Delete test users and topic if they exist
+				if (adminUser && adminUser.uid) {
+			  await User.delete(adminUser.uid);
+				}
+
+				if (regularUser && regularUser.uid) {
+			  await User.delete(regularUser.uid);
+				}
+
+				if (testTopic && testTopic.tid) {
+			  await topics.delete(testTopic.tid);
+				}
+		  } catch (err) {
+			// Log the error but don't fail the cleanup
+				console.error('Error during cleanup:', err);
+		  }
 		});
 
 		it('should allow admin to endorse a topic successfully', async () => {
-			const response = await topics.endorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
-			assert.equal(response.status, 200, 'Status should be 200 OK');
+		  const response = await topics.endorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
+		  assert.equal(response.status, 200, 'Status should be 200 OK');
 
-			const endorsed = await topics.isEndorsed(testTopic.tid);
-			assert.strictEqual(endorsed, true, 'Topic should be endorsed');
+		  const endorsed = await topics.isEndorsed(testTopic.tid);
+		  assert.strictEqual(endorsed, true, 'Topic should be endorsed');
 		});
 
 		it('should allow admin to unendorse a topic successfully', async () => {
-			// First endorse the topic
-			await topics.endorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
+		  // First endorse the topic
+		  await topics.endorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
 
-			// Now unendorse
-			const response = await topics.unendorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
-			assert.equal(response.status, 200, 'Status should be 200 OK');
+		  // Now unendorse
+		  const response = await topics.unendorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
+		  assert.equal(response.status, 200, 'Status should be 200 OK');
 
-			const endorsed = await topics.isEndorsed(testTopic.tid);
-			assert.strictEqual(endorsed, false, 'Topic should be unendorsed');
+		  const endorsed = await topics.isEndorsed(testTopic.tid);
+		  assert.strictEqual(endorsed, false, 'Topic should be unendorsed');
 		});
 
 		it('should prevent regular users from endorsing a topic', async () => {
-			try {
+		  try {
 				await topics.endorse({ uid: regularUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
 				assert.fail('Regular user should not be able to endorse a topic');
-			} catch (err) {
+		  } catch (err) {
 				assert.strictEqual(err.message, '[[error:no-privileges]]', 'Error message should indicate lack of privileges');
-			}
+		  }
 		});
 
 		it('should return an error when endorsing a non-existent topic', async () => {
-			try {
-				await topics.endorse({ uid: adminUser.uid }, { tids: [999999], cid: categoryObj.cid });
+		  try {
+				await topics.endorse({ uid: adminUser.uid }, { tids: [999999], cid: categoryObj.cid }); // Replaced 'someCategoryId' with 'categoryObj.cid'
 				assert.fail('Should not endorse a non-existent topic');
-			} catch (err) {
+		  } catch (err) {
 				assert.strictEqual(err.message, '[[error:no-topic]]', 'Error message should indicate no such topic');
-			}
+		  }
 		});
 
 		it('should prevent multiple endorsements by the same user', async () => {
-			// First endorsement
-			const firstResponse = await topics.endorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
-			assert.equal(firstResponse.status, 200, 'First endorsement should be successful');
+		  // First endorsement
+		  const firstResponse = await topics.endorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
+		  assert.equal(firstResponse.status, 200, 'First endorsement should be successful');
 
-			// Attempt to endorse again
-			try {
+		  // Attempt to endorse again
+		  try {
 				await topics.endorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
 				assert.fail('Should not allow multiple endorsements by the same user');
-			} catch (err) {
+		  } catch (err) {
 				assert.strictEqual(err.message, '[[error:already-endorsed]]', 'Error message should indicate already endorsed');
-			}
+		  }
 		});
 
 		it('should accurately reflect endorsement status after endorsement and unendorsement', async () => {
-			// Endorse the topic
-			await topics.endorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
-			let endorsed = await topics.isEndorsed(testTopic.tid);
-			assert.strictEqual(endorsed, true, 'Topic should be endorsed after endorsement');
+		  // Endorse the topic
+		  await topics.endorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
+		  let endorsed = await topics.isEndorsed(testTopic.tid);
+		  assert.strictEqual(endorsed, true, 'Topic should be endorsed after endorsement');
 
-			// Unendorse the topic
-			await topics.unendorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
-			endorsed = await topics.isEndorsed(testTopic.tid);
-			assert.strictEqual(endorsed, false, 'Topic should not be endorsed after unendorsement');
+		  // Unendorse the topic
+		  await topics.unendorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
+		  endorsed = await topics.isEndorsed(testTopic.tid);
+		  assert.strictEqual(endorsed, false, 'Topic should not be endorsed after unendorsement');
 		});
 
 		it('should emit endorsement and unendorsement events', (done) => {
-			let endorsementEventReceived = false;
-			let unendorsementEventReceived = false;
+		  let endorsementEventReceived = false;
+		  let unendorsementEventReceived = false;
 
-			// Listen for endorsement event
-			socket.on('event:topic_endorsed', (data) => {
+		  // Listen for endorsement event
+		  socket.on('event:topic_endorsed', (data) => {
 				endorsementEventReceived = true;
 				try {
-					assert.strictEqual(data.tid, testTopic.tid, 'Endorsement event should have correct topic ID');
-					assert.strictEqual(data.uid, adminUser.uid, 'Endorsement event should have correct user ID');
+			  assert.strictEqual(data.tid, testTopic.tid, 'Endorsement event should have correct topic ID');
+			  assert.strictEqual(data.uid, adminUser.uid, 'Endorsement event should have correct user ID');
 				} catch (err) {
-					done(err);
+			  done(err);
 				}
-			});
+		  });
 
-			// Listen for unendorsement event
-			socket.on('event:topic_unendorsed', (data) => {
+		  // Listen for unendorsement event
+		  socket.on('event:topic_unendorsed', (data) => {
 				unendorsementEventReceived = true;
 				try {
-					assert.strictEqual(data.tid, testTopic.tid, 'Unendorsement event should have correct topic ID');
-					assert.strictEqual(data.uid, adminUser.uid, 'Unendorsement event should have correct user ID');
+			  assert.strictEqual(data.tid, testTopic.tid, 'Unendorsement event should have correct topic ID');
+			  assert.strictEqual(data.uid, adminUser.uid, 'Unendorsement event should have correct user ID');
 				} catch (err) {
-					done(err);
+			  done(err);
 				}
-			});
+		  });
 
-			// Endorse the topic
-			topics.endorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid })
+		  // Endorse the topic
+		  topics.endorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid })
 				.then(() => {
-					assert.strictEqual(endorsementEventReceived, true, 'Endorsement event should be received');
+			  assert.strictEqual(endorsementEventReceived, true, 'Endorsement event should be received');
 
-					// Unendorse the topic
-					return topics.unendorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
+			  // Unendorse the topic
+			  return topics.unendorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
 				})
 				.then(() => {
-					assert.strictEqual(unendorsementEventReceived, true, 'Unendorsement event should be received');
-					done();
+			  assert.strictEqual(unendorsementEventReceived, true, 'Unendorsement event should be received');
+			  done();
 				})
 				.catch(done);
 		});
-	});
+	  });
 
 
 	describe('.ignore', () => {
