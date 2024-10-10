@@ -2749,7 +2749,6 @@ describe('Topic\'s Endorse Feature with Mock Server', () => {
 		// Emit endorse event from client
 		clientSocket.emit('endorse', { tid: testTopic.tid, uid: adminUser.uid });
 	});
-
 });
 
 
