@@ -705,8 +705,7 @@ describe('Topic\'s', () => {
 			assert(!isLocked);
 		});
 
-
-		// Test Cases for Endorsement Logic 
+		// Test Cases for Endorsement Logic
 		it('should endorse topic by another admin', async () => {
 			await apiTopics.endorse({ uid: adminUid }, { tids: [endorseTestTopic.tid], cid: categoryObj.cid });
 			const isEndorsed = await topics.isEndorsed(endorseTestTopic.tid);
