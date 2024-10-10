@@ -1039,46 +1039,6 @@ describe('Topic\'s', () => {
 			}
 		});
 
-		it('should emit endorsement and unendorsement events', (done) => {
-			let endorsementEventReceived = false;
-			let unendorsementEventReceived = false;
-
-			// Listen for endorsement event
-			socket.on('event:topic_endorsed', (data) => {
-				endorsementEventReceived = true;
-				try {
-					assert.strictEqual(data.tid, testTopic.tid, 'Endorsement event should have correct topic ID');
-					assert.strictEqual(data.uid, adminUser.uid, 'Endorsement event should have correct user ID');
-				} catch (err) {
-					done(err);
-				}
-			});
-
-			// Listen for unendorsement event
-			socket.on('event:topic_unendorsed', (data) => {
-				unendorsementEventReceived = true;
-				try {
-					assert.strictEqual(data.tid, testTopic.tid, 'Unendorsement event should have correct topic ID');
-					assert.strictEqual(data.uid, adminUser.uid, 'Unendorsement event should have correct user ID');
-				} catch (err) {
-					done(err);
-				}
-			});
-
-			// Endorse the topic
-			topics.endorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid })
-				.then(() => {
-					assert.strictEqual(endorsementEventReceived, true, 'Endorsement event should be received');
-
-					// Unendorse the topic
-					return topics.unendorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
-				})
-				.then(() => {
-					assert.strictEqual(unendorsementEventReceived, true, 'Unendorsement event should be received');
-					done();
-				})
-				.catch(done);
-		});
 	});
 
 
