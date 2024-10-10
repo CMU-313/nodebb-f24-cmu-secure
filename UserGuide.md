@@ -4,10 +4,20 @@
 3. Endorsement actions are logged just like other actions, i.e., lock and pin.
 4. Added Endorsed tag in topic list (displayed after clicking on a category) for endorsed topics.
 5. Configured `topic.json` and `error.json` for correct rendering.
+6. Added functionality for green endorsement checkmark to appear upon click of 'Endorse topic' button and disappear upon click of 'Unendorse topic' button
+7. Added hover element for green endorsement checkmark to indicate that instructor has endorsed a post
 
 ### Front-end New Testing
 1. Ensures correct API calls and privileged users have access to this feature.
 2. Rendering test is done by user testing. All new features won't trigger explicit errors.
+3. Manually tested green endorsement checkmark by building on personal NodeBB account
+   - Navigating to Announcements page
+   - Click on a post (if no existing post, click New Topic and enter relevant content and submit)
+   - Click on Topic Tools and click the menu option that states Endorse Topic
+   - Upon clicking on this button, you will see a green checkmark next to the post number
+   - When you hover over the green checkmark, you will see a note that says 'An instructor endorsed this post'
+   - To unendorse, click on Topic Tools again and click the menu option that states Unendorse Topic
+   - The green checkmark will disappear
 
 ### Back-end Features
 1. Added API calls for `endorse` and `unendorse` 
