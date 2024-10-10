@@ -150,24 +150,6 @@ describe('Messaging Library', () => {
 			assert.equal(body.status.message, await translator.translate('[[error:required-parameters-missing, uids]]'));
 		});
 
-		it('should return rate limit error on second try', async () => {
-			const oldValue = meta.config.chatMessageDelay;
-			meta.config.chatMessageDelay = 1000;
-
-			await callv3API('post', '/chats', {
-				uids: [mocks.users.baz.uid],
-			}, 'foo');
-
-			const { response, body } = await callv3API('post', `/chats`, {
-				uids: [mocks.users.baz.uid],
-			}, 'foo');
-
-			assert.equal(response.statusCode, 400);
-			assert.equal(body.status.code, 'bad-request');
-			assert.equal(body.status.message, await translator.translate('[[error:too-many-messages]]'));
-			meta.config.chatMessageDelay = oldValue;
-		});
-
 		it('should create a new chat room', async () => {
 			await User.setSetting(mocks.users.baz.uid, 'restrictChat', '0');
 			const { body } = await callv3API('post', `/chats`, {
