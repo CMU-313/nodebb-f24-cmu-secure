@@ -6,6 +6,7 @@
 5. Configured `topic.json` and `error.json` for correct rendering.
 6. Added functionality for green endorsement checkmark to appear upon click of 'Endorse topic' button and disappear upon click of 'Unendorse topic' button
 7. Added hover element for green endorsement checkmark to indicate that instructor has endorsed a post
+8. Remove limitation on the number of messages allowed to be send in a minute, which we removed the error message that shows up when someone sent multiple messages in the minute
 
 ### Front-end New Testing
 1. Ensures correct API calls and privileged users have access to this feature.
@@ -18,14 +19,19 @@
    - When you hover over the green checkmark, you will see a note that says 'An instructor endorsed this post'
    - To unendorse, click on Topic Tools again and click the menu option that states Unendorse Topic
    - The green checkmark will disappear
+4. To manually that sending mulitiple messages in a minutes is allowed and does not have error message
+    - Start Nodebb and manual testing by sending multiple message in a minute to see if the error message still pops up
+    - Tested back end testing by letting users to send multiple messages in a minute (message flooding) and the user will be able to send out the messages
+   
 
 ### Back-end Features
 1. Added API calls for `endorse` and `unendorse` 
 2. Configured API response format to include `endorse`
 3. Configured routes for `endorse`
+4. Remove limitation on the number of messages allowed to be send in a minute, which we disabled the functions that checks message flooding
 
 ### Back-end Testing
 1. Automated test suite is included in `./test/topic.js`, primarily testing features of endorsement.
-   (describe what the test cases are doing)
+   (describe what the test cases are doing). Checked for user permissions (only admins are able to endorse) and other endorse functionalities. 
 2. Successful API calls are necessary to pass the test case. 
    However, do note that API calls are tested in pre-written test file `./test/api.js` and no modifications are made to it.
