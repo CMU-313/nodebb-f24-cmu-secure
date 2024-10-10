@@ -657,7 +657,6 @@ describe('Topic\'s', () => {
 				description: 'Test category created by testing script',
 			}));
 
-			// Comment @YG
 			// I created another topic for endorse testing.
 			topicEndorseTest = {
 				userId: fooUid,
@@ -731,8 +730,6 @@ describe('Topic\'s', () => {
 			}
 		});
 		// End of implementation
-
-		
 
 		it('should pin topic', async () => {
 			await apiTopics.pin({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid });
