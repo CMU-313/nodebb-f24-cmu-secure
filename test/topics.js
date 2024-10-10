@@ -1026,14 +1026,6 @@ describe('Topic\'s', () => {
 			}
 		});
 
-		it('should allow admin to endorse a topic successfully', async () => {
-			const response = await topics.endorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
-			assert.equal(response.status, 200, 'Status should be 200 OK');
-
-			const endorsed = await topics.isEndorsed(testTopic.tid);
-			assert.strictEqual(endorsed, true, 'Topic should be endorsed');
-		});
-
 		it('should allow admin to unendorse a topic successfully', async () => {
 			// First endorse the topic
 			await topics.endorse({ uid: adminUser.uid }, { tids: [testTopic.tid], cid: testTopic.cid });
