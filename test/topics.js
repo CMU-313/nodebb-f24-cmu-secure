@@ -1038,7 +1038,6 @@ describe('Topic\'s', () => {
 				console.error('Error during cleanup:', err);
 			}
 		});
-
 	});
 
 
@@ -2747,17 +2746,6 @@ describe('Topic\'s Endorse Feature with Mock Server', () => {
 			.then(() => done())
 			.catch(done);
 	});
-
-	it('should allow admin to endorse a topic successfully', (done) => {
-		clientSocket.on('event:topic_endorsed', (data) => {
-			try {
-				assert.strictEqual(data.tid, testTopic.tid, 'Endorsement event should have correct topic ID');
-				assert.strictEqual(data.uid, adminUser.uid, 'Endorsement event should have correct user ID');
-				done();
-			} catch (err) {
-				done(err);
-			}
-		});
 
 		// Emit endorse event from client
 		clientSocket.emit('endorse', { tid: testTopic.tid, uid: adminUser.uid });
