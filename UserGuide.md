@@ -19,9 +19,11 @@
    - When you hover over the green checkmark, you will see a note that says 'An instructor endorsed this post'
    - To unendorse, click on Topic Tools again and click the menu option that states Unendorse Topic
    - The green checkmark will disappear
+   - As the feature is visual, these checks are enough to verify its accuracy and that it is working. 
 4. To manually that sending mulitiple messages in a minutes is allowed and does not have error message
     - Start Nodebb and manual testing by sending multiple message in a minute to see if the error message still pops up
     - Tested back end testing by letting users to send multiple messages in a minute (message flooding) and the user will be able to send out the messages
+    - As the feature is visual, these checks are enough to verify its accuracy and that it is working. Originally, there would have been an error message that would indicate if the feature implemented was working/ not working.
    
 
 ### Back-end Features
@@ -32,6 +34,8 @@
 
 ### Back-end Testing
 1. Automated test suite is included in `./test/topic.js`, primarily testing features of endorsement.
-   (describe what the test cases are doing). Checked for user permissions (only admins are able to endorse) and other endorse functionalities. 
-2. Successful API calls are necessary to pass the test case. 
+   - Checked for user permissions (only admins are able to endorse) and other endorse functionalities.
+   - The back-end testing is enough as it covers the core functionalities of all the implemented functions like user permissions, endorsing and unendorsing and provides code coverage for all the newly implemented functions. 
+3. Successful API calls are necessary to pass the test case. 
    However, do note that API calls are tested in pre-written test file `./test/api.js` and no modifications are made to it.
+   
