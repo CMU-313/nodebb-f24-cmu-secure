@@ -48,7 +48,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'nodebb-cmusecure-hcfvf5a0dfhpdeh2.canadacentral-01'
+          app-name: 'nodebb-cmusecure'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_1ECEF77FB3854F6EBAACF240C0B359AE }}
           package: .
