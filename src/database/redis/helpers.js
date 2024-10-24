@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 const helpers = module.exports;
 
@@ -24,7 +24,10 @@ helpers.resultsToBool = function (results) {
 helpers.zsetToObjectArray = function (data) {
 	const objects = new Array(data.length / 2);
 	for (let i = 0, k = 0; i < objects.length; i += 1, k += 2) {
-		objects[i] = { value: data[k], score: parseFloat(data[k + 1]) };
+		objects[i] = {
+			value: data[k],
+			score: parseFloat(data[k + 1]),
+		};
 	}
 	return objects;
 };
