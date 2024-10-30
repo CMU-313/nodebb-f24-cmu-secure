@@ -23,12 +23,12 @@ topicsAPI._checkThumbPrivileges = async function ({ tid, uid }) {
 	const isUUID = validator.isUUID(tid);
 
 	// Sanity-check the tid if it's strictly not a uuid
-	if (!isUUID && (isNaN(parseInt(tid, 10)) || !await topics.exists(tid))) {
+	if (!isUUID && (isNaN(parseInt(tid, 10)) || !(await topics.exists(tid)))) {
 		throw new Error('[[error:no-topic]]');
 	}
 
 	// While drafts are not protected, tids are
-	if (!isUUID && !await privileges.topics.canEdit(tid, uid)) {
+	if (!isUUID && !(await privileges.topics.canEdit(tid, uid))) {
 		throw new Error('[[error:no-privileges]]');
 	}
 };
@@ -188,7 +188,7 @@ topicsAPI.unfollow = async function (caller, data) {
 };
 
 topicsAPI.updateTags = async (caller, { tid, tags }) => {
-	if (!await privileges.topics.canEdit(tid, caller.uid)) {
+	if (!(await privileges.topics.canEdit(tid, caller.uid))) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -199,7 +199,7 @@ topicsAPI.updateTags = async (caller, { tid, tags }) => {
 };
 
 topicsAPI.addTags = async (caller, { tid, tags }) => {
-	if (!await privileges.topics.canEdit(tid, caller.uid)) {
+	if (!(await privileges.topics.canEdit(tid, caller.uid))) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -212,7 +212,7 @@ topicsAPI.addTags = async (caller, { tid, tags }) => {
 };
 
 topicsAPI.deleteTags = async (caller, { tid }) => {
-	if (!await privileges.topics.canEdit(tid, caller.uid)) {
+	if (!(await privileges.topics.canEdit(tid, caller.uid))) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -220,7 +220,8 @@ topicsAPI.deleteTags = async (caller, { tid }) => {
 };
 
 topicsAPI.getThumbs = async (caller, { tid }) => {
-	if (isFinite(tid)) { // post_uuids can be passed in occasionally, in that case no checks are necessary
+	if (isFinite(tid)) {
+		// post_uuids can be passed in occasionally, in that case no checks are necessary
 		const [exists, canRead] = await Promise.all([
 			topics.exists(tid),
 			privileges.topics.can('topics:read', tid, caller.uid),
@@ -268,7 +269,7 @@ topicsAPI.reorderThumbs = async (caller, { tid, path, order }) => {
 };
 
 topicsAPI.getEvents = async (caller, { tid }) => {
-	if (!await privileges.topics.can('topics:read', tid, caller.uid)) {
+	if (!(await privileges.topics.can('topics:read', tid, caller.uid))) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -276,7 +277,7 @@ topicsAPI.getEvents = async (caller, { tid }) => {
 };
 
 topicsAPI.deleteEvent = async (caller, { tid, eventId }) => {
-	if (!await privileges.topics.isAdminOrMod(tid, caller.uid)) {
+	if (!(await privileges.topics.isAdminOrMod(tid, caller.uid))) {
 		throw new Error('[[error:no-privileges]]');
 	}
 

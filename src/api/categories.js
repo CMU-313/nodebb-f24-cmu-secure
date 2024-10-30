@@ -23,10 +23,7 @@ categoriesAPI.list = async (caller) => {
 		return await categories.getCategoriesData(cids);
 	}
 
-	const [isAdmin, categoriesData] = await Promise.all([
-		user.isAdministrator(caller.uid),
-		getCategories(),
-	]);
+	const [isAdmin, categoriesData] = await Promise.all([user.isAdministrator(caller.uid), getCategories()]);
 
 	return {
 		categories: categoriesData.filter(category => category && (!category.disabled || isAdmin)),
@@ -196,10 +193,7 @@ categoriesAPI.getPrivileges = async (caller, { cid }) => {
 categoriesAPI.setPrivilege = async (caller, data) => {
 	await hasAdminPrivilege(caller.uid, 'privileges');
 
-	const [userExists, groupExists] = await Promise.all([
-		user.exists(data.member),
-		groups.exists(data.member),
-	]);
+	const [userExists, groupExists] = await Promise.all([user.exists(data.member), groups.exists(data.member)]);
 
 	if (!userExists && !groupExists) {
 		throw new Error('[[error:no-user-or-group]]');

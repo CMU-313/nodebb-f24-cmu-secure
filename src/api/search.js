@@ -32,7 +32,12 @@ searchApi.categories = async (caller, data) => {
 	}
 
 	const visibleCategories = await controllersHelpers.getVisibleCategories({
-		cids, uid: caller.uid, states: data.states, privilege, showLinks: data.showLinks, parentCid: data.parentCid,
+		cids,
+		uid: caller.uid,
+		states: data.states,
+		privilege,
+		showLinks: data.showLinks,
+		parentCid: data.parentCid,
 	});
 
 	if (Array.isArray(data.selectedCids)) {
@@ -67,8 +72,7 @@ async function findMatchedCids(uid, data) {
 
 	let matchedCids = result.categories.map(c => c.cid);
 	// no need to filter if all 3 states are used
-	const filterByWatchState = !Object.values(categories.watchStates)
-		.every(state => data.states.includes(state));
+	const filterByWatchState = !Object.values(categories.watchStates).every(state => data.states.includes(state));
 
 	if (filterByWatchState) {
 		const states = await categories.getWatchState(matchedCids, uid);
@@ -89,14 +93,16 @@ async function loadCids(uid, parentCid) {
 	async function getCidsRecursive(cids) {
 		const categoryData = await categories.getCategoriesFields(cids, ['subCategoriesPerPage']);
 		const cidToData = _.zipObject(cids, categoryData);
-		await Promise.all(cids.map(async (cid) => {
-			const allChildCids = await categories.getAllCidsFromSet(`cid:${cid}:children`);
-			if (allChildCids.length) {
-				const childCids = await privileges.categories.filterCids('find', allChildCids, uid);
-				resultCids.push(...childCids.slice(0, cidToData[cid].subCategoriesPerPage));
-				await getCidsRecursive(childCids);
-			}
-		}));
+		await Promise.all(
+			cids.map(async (cid) => {
+				const allChildCids = await categories.getAllCidsFromSet(`cid:${cid}:children`);
+				if (allChildCids.length) {
+					const childCids = await privileges.categories.filterCids('find', allChildCids, uid);
+					resultCids.push(...childCids.slice(0, cidToData[cid].subCategoriesPerPage));
+					await getCidsRecursive(childCids);
+				}
+			})
+		);
 	}
 
 	const allRootCids = await categories.getAllCidsFromSet(`cid:${parentCid}:children`);
@@ -127,18 +133,18 @@ searchApi.roomUsers = async (caller, { query, roomId }) => {
 
 	const { users } = results;
 	const foundUids = users.map(user => user && user.uid);
-	const isUidInRoom = _.zipObject(
-		foundUids,
-		await messaging.isUsersInRoom(foundUids, roomId)
-	);
+	const isUidInRoom = _.zipObject(foundUids, await messaging.isUsersInRoom(foundUids, roomId));
 
 	const roomUsers = users.filter(user => isUidInRoom[user.uid]);
-	const isOwners = await messaging.isRoomOwner(roomUsers.map(u => u.uid), roomId);
+	const isOwners = await messaging.isRoomOwner(
+		roomUsers.map(u => u.uid),
+		roomId
+	);
 
 	roomUsers.forEach((user, index) => {
 		if (user) {
 			user.isOwner = isOwners[index];
-			user.canKick = isRoomOwner && (parseInt(user.uid, 10) !== parseInt(caller.uid, 10));
+			user.canKick = isRoomOwner && parseInt(user.uid, 10) !== parseInt(caller.uid, 10);
 		}
 	});
 
