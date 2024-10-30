@@ -101,7 +101,7 @@ postsAPI.edit = async function (caller, data) {
 		throw new Error(`[[error:content-too-short, ${meta.config.minimumPostLength}]]`);
 	} else if (contentLen > meta.config.maximumPostLength) {
 		throw new Error(`[[error:content-too-long, ${meta.config.maximumPostLength}]]`);
-	} else if (!await posts.canUserPostContentWithLinks(caller.uid, data.content)) {
+	} else if (!(await posts.canUserPostContentWithLinks(caller.uid, data.content))) {
 		throw new Error(`[[error:not-enough-reputation-to-post-links, ${meta.config['min:rep:post-links']}]]`);
 	}
 
@@ -200,12 +200,10 @@ async function deleteOrRestoreTopicOf(command, pid, caller) {
 		return;
 	}
 	// command: delete/restore
-	await apiHelpers.doTopicAction(
-		command,
-		topic.deleted ? 'event:topic_restored' : 'event:topic_deleted',
-		caller,
-		{ tids: [topic.tid], cid: topic.cid }
-	);
+	await apiHelpers.doTopicAction(command, topic.deleted ? 'event:topic_restored' : 'event:topic_deleted', caller, {
+		tids: [topic.tid],
+		cid: topic.cid,
+	});
 }
 
 postsAPI.purge = async function (caller, data) {
@@ -242,20 +240,12 @@ postsAPI.purge = async function (caller, data) {
 	});
 
 	if (isMainAndLast) {
-		await apiHelpers.doTopicAction(
-			'purge',
-			'event:topic_purged',
-			caller,
-			{ tids: [postData.tid], cid: topicData.cid }
-		);
+		await apiHelpers.doTopicAction('purge', 'event:topic_purged', caller, { tids: [postData.tid], cid: topicData.cid });
 	}
 };
 
 async function isMainAndLastPost(pid) {
-	const [isMain, topicData] = await Promise.all([
-		posts.isMain(pid),
-		posts.getTopicFields(pid, ['postcount']),
-	]);
+	const [isMain, topicData] = await Promise.all([posts.isMain(pid), posts.getTopicFields(pid, ['postcount'])]);
 	return {
 		isMain: isMain,
 		isLast: topicData && topicData.postcount === 1,
@@ -351,7 +341,7 @@ postsAPI.getUpvoters = async function (caller, data) {
 	}
 	const { pid } = data;
 	const cid = await posts.getCidByPid(pid);
-	if (!await canSeeVotes(caller.uid, cid, 'upvoteVisibility')) {
+	if (!(await canSeeVotes(caller.uid, cid, 'upvoteVisibility'))) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -385,22 +375,16 @@ async function canSeeVotes(uid, cids, type) {
 	}
 	const uniqCids = _.uniq(cids);
 	const [canRead, isAdmin, isMod] = await Promise.all([
-		privileges.categories.isUserAllowedTo(
-			'topics:read', uniqCids, uid
-		),
+		privileges.categories.isUserAllowedTo('topics:read', uniqCids, uid),
 		privileges.users.isAdministrator(uid),
 		privileges.users.isModerator(uid, cids),
 	]);
 	const cidToAllowed = _.zipObject(uniqCids, canRead);
 	const checks = cids.map(
-		(cid, index) => isAdmin || isMod[index] ||
-		(
-			cidToAllowed[cid] &&
-			(
-				meta.config[type] === 'all' ||
-				(meta.config[type] === 'loggedin' && parseInt(uid, 10) > 0)
-			)
-		)
+		(cid, index) => isAdmin ||
+			isMod[index] ||
+			(cidToAllowed[cid] &&
+				(meta.config[type] === 'all' || (meta.config[type] === 'loggedin' && parseInt(uid, 10) > 0)))
 	);
 	return isArray ? checks : checks[0];
 }

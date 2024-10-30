@@ -8,6 +8,7 @@
 7. Added hover element for green endorsement checkmark to indicate that instructor has endorsed a post
 8. Remove limitation on the number of messages allowed to be send in a minute, which we removed the error message that shows up when someone sent multiple messages in the minute
 
+
 ### Front-end New Testing
 1. Ensures correct API calls and privileged users have access to this feature.
 2. Rendering test is done by user testing. All new features won't trigger explicit errors.
@@ -24,7 +25,7 @@
     - Start Nodebb and manual testing by sending multiple message in a minute to see if the error message still pops up
     - Tested back end testing by letting users to send multiple messages in a minute (message flooding) and the user will be able to send out the messages
     - As the feature is visual, these checks are enough to verify its accuracy and that it is working. Originally, there would have been an error message that would indicate if the feature implemented was working/ not working.
-   
+
 
 ### Back-end Features
 1. Added API calls for `endorse` and `unendorse` 
