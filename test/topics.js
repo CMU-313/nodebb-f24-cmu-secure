@@ -657,7 +657,6 @@ describe('Topic\'s', () => {
 				description: 'Test category created by testing script',
 			}));
 
-			// Comment @YG
 			// I created another topic for endorse testing.
 			topicEndorseTest = {
 				userId: fooUid,
@@ -706,9 +705,7 @@ describe('Topic\'s', () => {
 			assert(!isLocked);
 		});
 
-
-		// Comment @YG
-		// Most basic test cases that ensure backend endorse logic
+		// Test Cases for Endorsement Logic
 		it('should endorse topic by another admin', async () => {
 			await apiTopics.endorse({ uid: adminUid }, { tids: [endorseTestTopic.tid], cid: categoryObj.cid });
 			const isEndorsed = await topics.isEndorsed(endorseTestTopic.tid);
@@ -732,7 +729,6 @@ describe('Topic\'s', () => {
 			}
 		});
 		// End of implementation
-
 
 		it('should pin topic', async () => {
 			await apiTopics.pin({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid });
