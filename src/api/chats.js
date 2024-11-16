@@ -42,7 +42,9 @@ chatsAPI.list = async (caller, { uid = caller.uid, start, stop, page, perPage } 
 	}
 
 	if (!start && !stop && page) {
-		winston.warn('[api/chats] Sending `page` and `perPage` to .list() is deprecated in favour of `start` and `stop`. The deprecated parameters will be removed in v4.');
+		winston.warn(
+			'[api/chats] Sending `page` and `perPage` to .list() is deprecated in favour of `start` and `stop`. The deprecated parameters will be removed in v4.'
+		);
 		start = Math.max(0, page - 1) * perPage;
 		stop = start + perPage - 1;
 	}
@@ -147,10 +149,7 @@ chatsAPI.update = async (caller, data) => {
 		}
 		await messaging.renameRoom(caller.uid, data.roomId, data.name);
 	}
-	const [roomData, isAdmin] = await Promise.all([
-		messaging.getRoomData(data.roomId),
-		user.isAdministrator(caller.uid),
-	]);
+	const [roomData, isAdmin] = await Promise.all([messaging.getRoomData(data.roomId), user.isAdministrator(caller.uid)]);
 	if (!roomData) {
 		throw new Error('[[error:invalid-data]]');
 	}
@@ -241,9 +240,7 @@ chatsAPI.users = async (caller, data) => {
 	const [isOwner, isUserInRoom, users, isAdmin, onlineUids] = await Promise.all([
 		messaging.isRoomOwner(caller.uid, data.roomId),
 		messaging.isUserInRoom(caller.uid, data.roomId),
-		messaging.getUsersInRoomFromSet(
-			`chat:room:${data.roomId}:uids:online`, data.roomId, start, stop, true
-		),
+		messaging.getUsersInRoomFromSet(`chat:room:${data.roomId}:uids:online`, data.roomId, start, stop, true),
 		user.isAdministrator(caller.uid),
 		io.getUidsInRoom(`chat_room_${data.roomId}`),
 	]);
