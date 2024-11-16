@@ -5,9 +5,17 @@ const plugins = require('../plugins');
 const utils = require('../utils');
 
 const intFields = [
-	'uid', 'pid', 'tid', 'deleted', 'timestamp',
-	'upvotes', 'downvotes', 'deleterUid', 'edited',
-	'replies', 'bookmarks',
+	'uid',
+	'pid',
+	'tid',
+	'deleted',
+	'timestamp',
+	'upvotes',
+	'downvotes',
+	'deleterUid',
+	'edited',
+	'replies',
+	'bookmarks',
 ];
 
 module.exports = function (Posts) {
@@ -64,8 +72,12 @@ function modifyPost(post, fields) {
 		if (post.hasOwnProperty('timestamp')) {
 			post.timestampISO = utils.toISOString(post.timestamp);
 		}
+
 		if (post.hasOwnProperty('edited')) {
 			post.editedISO = post.edited !== 0 ? utils.toISOString(post.edited) : '';
 		}
+
+		// Mark post as "English" if decided by translator service or if it has no info
+		post.isEnglish = post.isEnglish === 'true' || post.isEnglish === undefined;
 	}
 }
